@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grace Renee | Living Blueprint</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#050611;--purple:#9b5cff;--teal:#38e8df;--orange:#ff9d42;--text:#f4f2ff;--muted:#9b9caf;--grid:rgba(120,100,255,.08)}
+html{scroll-behavior:smooth} body{min-height:100vh;background:var(--bg);color:var(--text);font-family:Inter,sans-serif;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:-30%;z-index:-3;background:radial-gradient(circle at 20% 30%,rgba(155,92,255,.22),transparent 35%),radial-gradient(circle at 80% 20%,rgba(56,232,223,.16),transparent 32%),radial-gradient(circle at 60% 80%,rgba(255,157,66,.1),transparent 30%);filter:blur(40px);animation:aurora 18s ease-in-out infinite alternate}
+body:after{content:"";position:fixed;inset:0;z-index:-2;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:45px 45px;mask-image:linear-gradient(to bottom,black,transparent 90%)}
+@keyframes aurora{0%{transform:translate(-3%,-2%) scale(1)}50%{transform:translate(4%,3%) scale(1.08)}100%{transform:translate(-2%,5%) scale(1.04)}}
+nav{width:100%;padding:22px 7%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(155,92,255,.15);background:rgba(5,6,17,.65);backdrop-filter:blur(14px);position:sticky;top:0;z-index:20}
+.logo{font-family:Orbitron,sans-serif;font-size:.9rem;letter-spacing:2px}.logo span{color:var(--purple)}
+.nav-links{display:flex;gap:22px}.nav-links a{color:var(--muted);text-decoration:none;font-size:.8rem}.nav-links a:hover{color:var(--teal)}
+.hero{min-height:calc(100vh - 75px);display:flex;align-items:center;padding:80px 8%;position:relative}.hero-content{max-width:850px}
+.system-label{font-family:Orbitron,sans-serif;font-size:.7rem;letter-spacing:3px;color:var(--teal);margin-bottom:24px;display:flex;align-items:center;gap:10px}
+.system-dot{width:7px;height:7px;background:var(--teal);border-radius:50%;box-shadow:0 0 8px var(--teal),0 0 18px rgba(56,232,223,.6);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+h1{font-family:Orbitron,sans-serif;font-size:clamp(2.8rem,9vw,7rem);line-height:.95;letter-spacing:-2px;margin-bottom:25px}h1 .accent{color:var(--purple);text-shadow:0 0 20px rgba(155,92,255,.4)}
+.subtitle{font-size:clamp(1.1rem,2vw,1.45rem);color:var(--muted);max-width:650px;line-height:1.7;margin-bottom:38px}
+.primary-btn,.demo-link,.build-button{display:inline-flex;align-items:center;gap:8px;padding:11px 15px;border:1px solid var(--orange);background:rgba(255,157,66,.05);color:var(--orange);text-decoration:none;font-family:Orbitron,sans-serif;font-size:.6rem;letter-spacing:1px;transition:.25s;cursor:pointer}.primary-btn{padding:15px 22px;font-size:.75rem}.primary-btn:hover,.demo-link:hover,.build-button:hover{background:rgba(255,157,66,.12);box-shadow:0 0 18px rgba(255,157,66,.2);transform:translateY(-2px)}
+.blueprint-marker{position:absolute;right:8%;bottom:12%;width:170px;height:170px;border:1px solid rgba(56,232,223,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;color:rgba(56,232,223,.55);font-family:Orbitron,sans-serif;font-size:.6rem;letter-spacing:2px;animation:rotateBlueprint 30s linear infinite}.blueprint-marker:before{content:"";position:absolute;width:110px;height:110px;border:1px dashed rgba(155,92,255,.35);border-radius:50%}@keyframes rotateBlueprint{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.work,.early-work,.build-log,.about{padding:120px 8% 150px;border-top:1px solid rgba(155,92,255,.12)}
+.section-header,.build-log-header{max-width:720px;margin-bottom:75px}.section-header h2,.build-log-header h2{font-family:Orbitron,sans-serif;font-size:clamp(2.4rem,7vw,5rem);line-height:1;margin-bottom:22px}.section-header h2 span,.build-log-header h2 span{color:var(--purple);text-shadow:0 0 18px rgba(155,92,255,.35)}.section-header p,.build-log-header p{color:var(--muted);font-size:1.05rem;line-height:1.7}
+.project-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.project-card{position:relative;padding:30px;min-height:320px;background:rgba(8,10,25,.72);border:1px solid rgba(56,232,223,.16);backdrop-filter:blur(14px);overflow:hidden;transition:.3s}.project-card:before{content:"";position:absolute;left:0;top:0;width:3px;height:100%;background:linear-gradient(180deg,var(--purple),var(--teal),var(--orange))}.project-card:hover{transform:translateY(-5px);border-color:rgba(56,232,223,.4)}
+.project-number,.build-number{color:var(--orange);font-family:Orbitron,sans-serif;font-size:.62rem;letter-spacing:2px;margin-bottom:20px}.project-card h3,.build-item h3{font-family:Orbitron,sans-serif;font-size:clamp(1.2rem,3vw,1.8rem);margin-bottom:15px}.project-card p,.build-item p{color:var(--muted);line-height:1.65;margin-bottom:22px}.tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:25px}.tags span,.build-tag{padding:6px 9px;border:1px solid rgba(56,232,223,.18);color:rgba(56,232,223,.75);font-size:.58rem;letter-spacing:1px}.build-button{margin-top:18px}
+.timeline{position:relative;max-width:900px;margin:0 auto;padding-left:45px}.timeline:before{content:"";position:absolute;left:9px;top:0;bottom:0;width:1px;background:linear-gradient(180deg,var(--purple),var(--teal),var(--orange));opacity:.5}.build-item{position:relative;padding:0 0 75px 30px}.build-node{position:absolute;left:-42px;top:3px;width:18px;height:18px;border:2px solid var(--teal);background:var(--bg);border-radius:50%;box-shadow:0 0 10px rgba(56,232,223,.4)}.build-item h3{font-size:clamp(1.3rem,4vw,2.2rem)}.build-item p{max-width:650px}.current-build{padding-bottom:0}.current-build .build-node{border-color:var(--orange);box-shadow:0 0 12px rgba(255,157,66,.5)}.current-build .build-number{color:var(--teal)}
+.about{padding-bottom:140px}.about-box{max-width:900px;padding:45px;background:rgba(8,10,25,.72);border:1px solid rgba(155,92,255,.2)}.about-box h2{font-family:Orbitron,sans-serif;font-size:clamp(2rem,5vw,3.8rem);margin-bottom:25px}.about-box h2 span{color:var(--teal)}.about-box p{color:var(--muted);line-height:1.8;margin-bottom:18px}
+footer{padding:45px 8%;border-top:1px solid rgba(155,92,255,.12);display:flex;justify-content:space-between;align-items:center;gap:20px}footer p{color:var(--muted);font-size:.75rem}.footer-accent{color:var(--purple);font-family:Orbitron,sans-serif}
+.project-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:25px;background:rgba(2,3,12,.82);backdrop-filter:blur(10px);z-index:1000}.project-modal.active{display:flex}.project-modal-box{position:relative;width:100%;max-width:650px;max-height:85vh;overflow-y:auto;padding:40px;background:linear-gradient(145deg,rgba(15,17,42,.97),rgba(7,9,25,.97));border:1px solid rgba(56,232,223,.35);box-shadow:0 0 30px rgba(155,92,255,.25)}
+.close-modal{position:absolute;top:15px;right:18px;width:35px;height:35px;border:1px solid rgba(255,157,66,.5);background:rgba(255,157,66,.05);color:var(--orange);font-size:1.5rem;cursor:pointer}.project-modal-box h2{font-family:Orbitron,sans-serif;font-size:clamp(1.8rem,6vw,3rem);color:var(--purple);margin-bottom:20px}.project-modal-box>p,#modal-details p{color:var(--muted);line-height:1.7;margin:20px 0}#modal-details strong{color:var(--teal)}#modal-demo{margin-top:10px}
+@media(max-width:700px){nav{padding:18px 6%}.nav-links{gap:12px}.nav-links a{font-size:.65rem}.hero{padding:70px 7% 100px}h1{font-size:clamp(3rem,15vw,5rem)}.blueprint-marker{opacity:.22;right:-45px;bottom:40px;width:140px;height:140px}.project-grid{grid-template-columns:1fr}.work,.early-work,.build-log,.about{padding:90px 7% 110px}.timeline{padding-left:30px}.build-item{padding-left:20px;padding-bottom:60px}.build-node{left:-37px}.about-box{padding:30px 25px}footer{flex-direction:column;align-items:flex-start}.project-modal{padding:15px}.project-modal-box{padding:30px 22px}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">GRACE<span>.RENEE</span></div>
+  <div class="nav-links">
+    <a href="#work">FEATURED</a>
+    <a href="#early-work">EARLY WORK</a>
+    <a href="#build-log">BUILD LOG</a>
+    <a href="#about">ABOUT</a>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <div class="hero-content">
+      <div class="system-label"><div class="system-dot"></div>SYSTEM ONLINE · LIVING BLUEPRINT</div>
+      <h1>CREATIVE<br><span class="accent">DEVELOPER</span></h1>
+      <p class="subtitle">I build practical tools, interactive experiences, and full-stack applications that turn everyday problems into scalable solutions.</p>
+      <a href="#work" class="primary-btn">EXPLORE MY WORK <span>→</span></a>
+    </div>
+    <div class="blueprint-marker">LIVING<br>BLUEPRINT</div>
+  </section>
+
+  <section class="work" id="work">
+    <div class="section-header">
+      <div class="system-label"><div class="system-dot"></div>FLAGSHIP BUILDS</div>
+      <h2>FEATURED <span>SYSTEMS.</span></h2>
+      <p>Full-stack applications and advanced productivity engines built with persistent storage, custom schemas, and dynamic user interfaces.</p>
+    </div>
+    <div class="project-grid" id="project-grid"></div>
+  </section>
+
+  <section class="early-work" id="early-work">
+    <div class="section-header">
+      <div class="system-label"><div class="system-dot"></div>FOUNDATIONAL EXPERIMENTS</div>
+      <h2>EARLY <span>PROTOTYPES.</span></h2>
+      <p>Client-side interfaces and planning tools where I developed my foundational UI, local storage, and application logic skills.</p>
+    </div>
+    <div class="project-grid" id="early-grid"></div>
+  </section>
+
+  <section class="build-log" id="build-log">
+    <div class="build-log-header">
+      <div class="system-label"><div class="system-dot"></div>DEVELOPMENT HISTORY</div>
+      <h2>THE BUILD <span>LOG.</span></h2>
+      <p>I didn't start with a finished system. I built one problem at a time, learned something, and built the next thing.</p>
+    </div>
+    <div class="timeline">
+      <article class="build-item"><div class="build-node"></div><div class="build-number">BUILD / 001</div><h3>SMALL TOOLS</h3><p>Early experiments focused on simple utilities and learning how to turn an idea into a working interface.</p><span class="build-tag">WHERE IT STARTED</span></article>
+      <article class="build-item"><div class="build-node"></div><div class="build-number">BUILD / 002</div><h3>THE ORGANIZER ERA</h3><p>Calendars, agendas, lists, brain dumps, themes, self-care tools, and planning systems became increasingly interactive.</p><span class="build-tag">LEARNING BY BUILDING</span></article>
+      <article class="build-item"><div class="build-node"></div><div class="build-number">BUILD / 003</div><h3>FULL-STACK BACKEND ARCHITECTURE</h3><p>Transitioned local storage prototypes into full-stack relational databases, implementing REST APIs, Supabase cloud integrations, and secure authentication.</p><span class="build-tag">DATABASE & BACKEND EVOLUTION</span></article>
+      <article class="build-item current-build"><div class="build-node"></div><div class="build-number">CURRENT BUILD</div><h3>LIVING BLUEPRINT</h3><p>Now I'm building the portfolio that documents the projects, experiments, skills, and full-stack evolution behind them.</p><span class="build-tag">CURRENTLY BUILDING</span></article>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="about-box">
+      <div class="system-label"><div class="system-dot"></div>ABOUT THE BUILDER</div>
+      <h2>I BUILD <span>BECAUSE I WONDER.</span></h2>
+      <p>I'm a self-taught creative developer who learns by building things.</p>
+      <p>Most of my projects begin with a simple question: "Could I make something that actually helps with this?"</p>
+      <p>That has led me from small utility tools to interactive planners, personal systems, full-stack income tracking, and comprehensive fitness & nutrition platforms.</p>
+      <p>I'm currently looking for freelance, commission, and creative development opportunities where I can keep building useful things.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>© 2026 Grace Renee</p>
+  <p class="footer-accent">LIVING BLUEPRINT</p>
+</footer>
+
+<div id="project-modal" class="project-modal">
+  <div class="project-modal-box">
+    <button class="close-modal" onclick="closeProject()">×</button>
+    <div class="system-label"><div class="system-dot"></div>PROJECT FILE</div>
+    <h2 id="modal-title">PROJECT</h2>
+    <p id="modal-description"></p>
+    <div id="modal-details"></div>
+    <a id="modal-demo" class="demo-link" href="#" target="_blank" rel="noopener">OPEN LIVE BUILD →</a>
+  </div>
+</div>
+
+<script>
+  // Complete projects list with PRISM and ADHD Agenda added to Featured Systems
+  const projectsData = [
+    {
+      project_type: 'featured',
+      title: 'ASCEND PERFORMANCE PLATFORM',
+      description: 'A full-stack fitness and nutrition platform with Supabase database persistence, a 7-day meal planner, macro analytics, and custom workout logging.',
+      tags: ['NODE.JS', 'EXPRESS', 'SUPABASE', 'POSTGRESQL', 'FULL-STACK'],
+      demo_url: 'https://friendly-churros-678b7a.netlify.app/',
+      purpose: 'Transform a browser-based recipe tool into a scalable relational platform.',
+      skills_practiced: 'Database schema design, REST APIs, Supabase integration, and state synchronization across complex UI workflows.',
+      why_it_matters: 'Proves the ability to architect end-to-end web applications with persistent database storage.'
+    },
+    {
+      project_type: 'featured',
+      title: 'FLEXIFI // INCOME & TIP TRACKER',
+      description: 'A full-stack financial log designed for server shifts and hourly income, featuring shift metrics, To-Go tracking, cash/card splits, and quarterly tax calculations.',
+      tags: ['NODE.JS', 'EXPRESS', 'SQL', 'SUPABASE', 'FINANCE'],
+      demo_url: '#',
+      purpose: 'Provide precise shift income logging, net pay calculations, and automated tax estimations for flexible workers.',
+      skills_practiced: 'Relational database design, mathematical calculations, API endpoint creation, and secure data persistence.',
+      why_it_matters: 'Solves real-world income tracking complexities for shift and service-industry work.'
+    },
+    {
+      project_type: 'featured',
+      title: 'RESIN & SMOKE E-COMMERCE HUB',
+      description: 'A relational e-commerce catalog and order processing backend for custom resin art and accessories with state tax logic.',
+      tags: ['SUPABASE', 'POSTGRESQL', 'E-COMMERCE', 'FULL-STACK'],
+      demo_url: '#',
+      purpose: 'Build a live storefront with product catalog management and automated order tracking.',
+      skills_practiced: 'Database relations, order/item mapping tables, dynamic pricing, and inventory persistence.',
+      why_it_matters: 'Demonstrates ability to construct commercial-grade e-commerce transaction flows.'
+    },
+    {
+      project_type: 'featured',
+      title: 'PRISM // ALIGN',
+      description: 'A personal planning system combining a calendar, capture terminal, brain dump, and action matrix into an advanced executive command center.',
+      tags: ['HTML', 'CSS', 'JAVASCRIPT', 'PLANNING SYSTEM', 'FEATURED'],
+      demo_url: 'https://glittering-speculoos-cea105.netlify.app/',
+      purpose: 'Build a comprehensive personal planning and capture ecosystem.',
+      skills_practiced: 'Advanced JavaScript state management, calendar algorithms, capture workflows, and responsive command center design.',
+      why_it_matters: 'Elevated from a simple prototype into a core high-performance planning system.'
+    },
+    {
+      project_type: 'featured',
+      title: 'ULTIMATE ADHD AGENDA',
+      description: 'A dynamic, low-friction agenda and task-management framework specifically optimized for attention flow, focus pacing, and rapid capture.',
+      tags: ['HTML', 'CSS', 'JAVASCRIPT', 'PRODUCTIVITY', 'FEATURED'],
+      demo_url: 'https://stalwart-sunshine-82cd62.netlify.app/',
+      purpose: 'Create a highly intuitive task engine that reduces cognitive load and prevents overwhelm.',
+      skills_practiced: 'Dynamic date parsing, low-friction UX design, task prioritization logic, and theme customization.',
+      why_it_matters: 'Demonstrates deep empathy for user experience and specialized cognitive workflow design.'
+    },
+    {
+      project_type: 'early',
+      title: 'COLOR WORKBOOK',
+      description: 'A color-coded planner built around calendars, lists, self-care tools, brain dumps, and night mode.',
+      tags: ['HTML', 'CSS', 'JAVASCRIPT', 'LOCAL DATA'],
+      demo_url: 'https://lucky-panda-bc53c0.netlify.app/',
+      purpose: 'Explore a more visual and flexible approach to personal organization.',
+      skills_practiced: 'Responsive layouts, theme switching, JavaScript interactions, and local data storage.',
+      why_it_matters: 'Pushed the organizer concept beyond a simple calendar.'
+    },
+    {
+      project_type: 'early',
+      title: 'TEND',
+      description: 'A small daily almanac combining calendar planning, lists, happenings, reflection, self-care, and hydration.',
+      tags: ['HTML', 'CSS', 'JAVASCRIPT', 'DAILY PLANNER'],
+      demo_url: 'https://wondrous-narwhal-dc4d5b.netlify.app/',
+      purpose: 'Combine everyday planning and personal check-ins into one experience.',
+      skills_practiced: 'Dynamic content, interactive sections, responsive design, and state management.',
+      why_it_matters: 'Explored how an app can feel more like a daily companion than a basic checklist.'
+    },
+    {
+      project_type: 'early',
+      title: 'NEON ZEN',
+      description: 'A personal self-care and regulation interface featuring breathing tools, interactive sensory controls, check-ins, and saved history.',
+      tags: ['INTERACTIVE UI', 'JAVASCRIPT', 'TRACKING', 'SELF-CARE'],
+      demo_url: 'https://deluxe-pegasus-8838e5.netlify.app/',
+      purpose: 'Build a calm interactive space with practical self-care tools.',
+      skills_practiced: 'Timers, interactive controls, saved history, JavaScript logic, and UI feedback.',
+      why_it_matters: 'Expanded the work into experience design and interactive tools.'
+    },
+    {
+      project_type: 'early',
+      title: 'MY RECIPE HUB',
+      description: 'A recipe and meal-planning application with nutrition tracking, workouts, grocery lists, and weekly planning.',
+      tags: ['RECIPES', 'CALORIE TRACKING', 'MEAL PLANNING', 'LOCAL STORAGE'],
+      demo_url: 'https://willowy-heliotrope-00b439.netlify.app/',
+      purpose: 'Start with recipes and grow the idea into a useful meal-planning system.',
+      skills_practiced: 'Form handling, local storage, nutrition data, meal planning, and grocery-list logic.',
+      why_it_matters: 'Became the direct starting point for Ascend Performance.'
+    }
+  ];
+
+  function renderProjects(projects) {
+    const featuredGrid = document.getElementById("project-grid");
+    const earlyGrid = document.getElementById("early-grid");
+    
+    featuredGrid.innerHTML = '';
+    earlyGrid.innerHTML = '';
+
+    let featuredCount = 1;
+    let earlyCount = 1;
+
+    projects.forEach((p, index) => {
+      const tagsArray = p.tags || [];
+      const isFeatured = p.project_type === 'featured';
+      const grid = isFeatured ? featuredGrid : earlyGrid;
+      const numStr = isFeatured 
+        ? `BUILD / ${String(featuredCount++).padStart(3, "0")}` 
+        : `PROTOTYPE / ${String(earlyCount++).padStart(3, "0")}`;
+
+      const cardHTML = `
+        <article class="project-card">
+          <div class="project-number">${numStr}</div>
+          <h3>${p.title}</h3>
+          <p>${p.description}</p>
+          <div class="tags">${tagsArray.map(t => `<span>${t}</span>`).join("")}</div>
+          <a class="demo-link" href="${p.demo_url}" target="_blank" rel="noopener">LIVE BUILD →</a>
+          <button class="build-button" onclick="showProjectFromDb(${index})">PROJECT DETAILS →</button>
+        </article>
+      `;
+      grid.insertAdjacentHTML("beforeend", cardHTML);
+    });
+
+    window.dbProjects = projects;
+  }
+
+  function showProjectFromDb(index) {
+    const p = window.dbProjects[index];
+    document.getElementById("modal-title").textContent = p.title;
+    document.getElementById("modal-description").textContent = p.description;
+    document.getElementById("modal-details").innerHTML = `
+      <p><strong>Purpose:</strong> ${p.purpose}</p>
+      <p><strong>What I practiced:</strong> ${p.skills_practiced}</p>
+      <p><strong>Why it matters:</strong> ${p.why_it_matters}</p>
+    `;
+    document.getElementById("modal-demo").href = p.demo_url;
+    document.getElementById("project-modal").classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeProject() {
+    document.getElementById("project-modal").classList.remove("active");
+    document.body.style.overflow = "";
+  }
+
+  document.getElementById("project-modal").addEventListener("click", e => {
+    if (e.target === e.currentTarget) closeProject();
+  });
+  
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeProject();
+  });
+
+  // Render immediately with the updated featured list
+  renderProjects(projectsData);
+</script>
+</body>
+</html>
