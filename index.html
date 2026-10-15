@@ -84,7 +84,7 @@ header { text-align: center; padding: 18px 8px 12px; }
   text-shadow: 0 0 18px rgba(0,240,255,.35);
 }
 .tagline { color: var(--muted); margin-top: 5px; font-size: .95rem; }
-.badge-group { display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 10px; }
+.badge-group { display: flex; gap: 8px; justify-content: center; align-items: center; margin-top: 10px; flex-wrap: wrap; }
 .badge {
   display: inline-block;
   padding: 7px 12px;
@@ -95,11 +95,64 @@ header { text-align: center; padding: 18px 8px 12px; }
   font-weight: 800;
   box-shadow: 0 0 0 1px rgba(0,0,0,.08);
 }
-.streak-badge {
+.profile-badge {
   background: rgba(0, 240, 255, 0.15);
-  color: var(--accent);
   border: 1px solid var(--accent);
 }
+.streak-badge {
+  background: rgba(57, 255, 20, 0.15);
+  color: var(--accent3);
+  border: 1px solid var(--accent3);
+}
+
+/* FIRST-TIME SETUP MODAL OVERLAY */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(10, 11, 20, 0.94);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-card {
+  background: var(--card);
+  border: 2px solid var(--accent);
+  border-radius: 24px;
+  padding: 24px;
+  width: min(100%, 420px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  text-align: center;
+  animation: pop .3s ease;
+}
+.modal-title { font-size: 1.5rem; font-weight: 900; margin-bottom: 8px; color: var(--accent); }
+.modal-desc { font-size: .88rem; color: var(--muted); margin-bottom: 20px; line-height: 1.4; }
+.input-group { text-align: left; margin-bottom: 16px; }
+.input-group label { display: block; font-size: .8rem; font-weight: 800; margin-bottom: 6px; color: var(--text); }
+.input-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: var(--card2);
+  color: var(--text);
+  outline: none;
+}
+.input-group input:focus { border-color: var(--accent); }
+.modal-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 14px;
+  padding: 14px;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 900;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
 nav { display: flex; gap: 7px; margin: 15px 0; }
 .nav-btn {
   flex: 1;
@@ -131,20 +184,34 @@ nav { display: flex; gap: 7px; margin: 15px 0; }
 .card-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 5px; }
 .card-subtitle { color: var(--muted); font-size: .88rem; margin-bottom: 15px; }
 .hint { color: var(--accent); font-size: .78rem; font-weight: 800; margin: -6px 0 12px; }
+
+.quick-bar { display: flex; gap: 8px; margin-bottom: 15px; }
 .quick-spin {
-  width: 100%;
+  flex: 2;
   border: 0;
   border-radius: 15px;
   padding: 14px;
-  margin-bottom: 15px;
   background: var(--accent);
   color: var(--bg);
   font-weight: 1000;
   font-size: 1rem;
   box-shadow: 0 7px 0 rgba(0,0,0,.2);
-  transition: transform .1s ease, filter .2s ease;
+  transition: transform .1s ease;
 }
-.quick-spin:active { transform: translateY(4px); box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+.chaos-spin {
+  flex: 1;
+  border: 0;
+  border-radius: 15px;
+  padding: 14px;
+  background: var(--accent2);
+  color: #fff;
+  font-weight: 1000;
+  font-size: .9rem;
+  box-shadow: 0 7px 0 rgba(0,0,0,.2);
+  transition: transform .1s ease;
+}
+.quick-spin:active, .chaos-spin:active { transform: translateY(4px); box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+
 .choice-section { margin-bottom: 20px; }
 .choice-heading { font-size: 1rem; font-weight: 900; margin-bottom: 9px; }
 .choice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
@@ -189,7 +256,7 @@ nav { display: flex; gap: 7px; margin: 15px 0; }
   transition: transform .1s ease;
 }
 .spin-main:active { transform: translateY(4px); box-shadow: 0 4px 0 rgba(0,0,0,.25); }
-.spin-main:disabled, .quick-spin:disabled { opacity: .55; cursor: not-allowed; }
+.spin-main:disabled, .quick-spin:disabled, .chaos-spin:disabled { opacity: .55; cursor: not-allowed; }
 .wheel-card { text-align: center; overflow: hidden; }
 .wheel-wrap {
   width: min(88vw, 420px);
@@ -408,37 +475,42 @@ nav { display: flex; gap: 7px; margin: 15px 0; }
   to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
-body.theme-rainbow .choice-section:nth-of-type(1) .choice-heading { color: #ff0055; text-shadow: 0 0 10px rgba(255,0,85,0.4); }
-body.theme-rainbow .choice-section:nth-of-type(2) .choice-heading { color: #ffaa00; text-shadow: 0 0 10px rgba(255,170,0,0.4); }
-body.theme-rainbow .choice-section:nth-of-type(3) .choice-heading { color: #00ff66; text-shadow: 0 0 10px rgba(0,255,102,0.4); }
-
-body.theme-rainbow .choice[data-group="brain"]:nth-child(1) { background: rgba(255, 0, 85, 0.25); border-color: #ff0055; }
-body.theme-rainbow .choice[data-group="brain"]:nth-child(2) { background: rgba(255, 128, 0, 0.25); border-color: #ff8000; }
-body.theme-rainbow .choice[data-group="brain"]:nth-child(3) { background: rgba(255, 230, 0, 0.25); border-color: #ffe600; }
-body.theme-rainbow .choice[data-group="brain"]:nth-child(4) { background: rgba(0, 230, 115, 0.25); border-color: #00e673; }
-body.theme-rainbow .choice[data-group="brain"]:nth-child(5) { background: rgba(0, 204, 255, 0.25); border-color: #00ccff; }
-body.theme-rainbow .choice[data-group="brain"]:nth-child(6) { background: rgba(0, 102, 255, 0.25); border-color: #0066ff; }
-body.theme-rainbow .choice[data-group="brain"]:nth-child(7) { background: rgba(153, 0, 255, 0.25); border-color: #9900ff; }
-body.theme-rainbow .choice[data-group="brain"]:nth-child(8) { background: rgba(255, 0, 204, 0.25); border-color: #ff00cc; }
-
-body.theme-rainbow .choice[data-group="situation"]:nth-child(odd) { background: rgba(0, 240, 255, 0.2); border-color: #00f0ff; }
-body.theme-rainbow .choice[data-group="situation"]:nth-child(even) { background: rgba(255, 0, 170, 0.2); border-color: #ff00aa; }
-
 @media (min-width: 600px) {
   .choice-grid { grid-template-columns: repeat(4, 1fr); }
 }
 </style>
 </head>
 <body>
+
+<!-- FIRST-TIME SETUP MODAL -->
+<div class="modal-overlay" id="profileModal" style="display: none;">
+  <div class="modal-card">
+    <div class="modal-title">👋 Welcome!</div>
+    <div class="modal-desc">Enter your name and birthday to lock in your tailored activity experience.</div>
+    <form onsubmit="saveProfile(event)">
+      <div class="input-group">
+        <label for="userNameInput">Screen Name / Nickname</label>
+        <input type="text" id="userNameInput" placeholder="e.g. Alex" required>
+      </div>
+      <div class="input-group">
+        <label for="userDobInput">Date of Birth</label>
+        <input type="date" id="userDobInput" required>
+      </div>
+      <button type="submit" class="modal-btn">Start Spinning 🎡</button>
+    </form>
+  </div>
+</div>
+
 <div class="app">
 <header>
   <div class="logo">🎡 Boredom Roulette</div>
   <div class="tagline">Because staring at the wall isn't an activity.</div>
   <div class="badge-group">
-    <div class="badge">SPIN YOUR WAY OUT</div>
+    <div class="badge profile-badge" id="profileBadge">🔒 Locked Profile</div>
     <div class="badge streak-badge" id="streakBadge">🔥 0 SPINS</div>
   </div>
 </header>
+
 <nav>
   <button class="nav-btn active" onclick="showSection('roulette', this)">🎡 Roulette</button>
   <button class="nav-btn" onclick="showSection('saved', this)">⭐ Saved</button>
@@ -446,7 +518,10 @@ body.theme-rainbow .choice[data-group="situation"]:nth-child(even) { background:
 </nav>
 
 <section id="roulette" class="section active">
-<button class="quick-spin" onclick="quickSpin()">⚡ I DON'T WANNA THINK — JUST SPIN</button>
+<div class="quick-bar">
+  <button class="quick-spin" onclick="quickSpin()">⚡ JUST SPIN</button>
+  <button class="chaos-spin" onclick="triggerChaosChallenge()">💥 WILDCARD</button>
+</div>
 
 <div class="card">
   <div class="card-title">Let's figure out your boredom.</div>
@@ -613,9 +688,9 @@ body.theme-rainbow .choice[data-group="situation"]:nth-child(even) { background:
       <li><strong>The app chooses ONE thing.</strong> No giant list of homework.</li>
       <li>Your brain state helps narrow the possibilities.</li>
       <li>Your situation keeps suggestions realistic.</li>
-      <li><strong>Reel pairing:</strong> Every spin instantly pairs with a matching trending reel or video topic!</li>
+      <li><strong>Sound Effects Included:</strong> Pure Web Audio sounds on click & spin win!</li>
+      <li><strong>Permanent Profile Lock:</strong> Locked to initial birthday.</li>
       <li>Saved activities stay on your device using localStorage.</li>
-      <li>Try different themes using the 🎨 button in the bottom right!</li>
     </ul>
   </div>
 </section>
@@ -635,43 +710,86 @@ body.theme-rainbow .choice[data-group="situation"]:nth-child(even) { background:
 </div>
 
 <script>
+// --- WEB AUDIO SOUND EFFECTS GENERATOR ---
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(type) {
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  if (type === 'click') {
+    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.05);
+    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+  } else if (type === 'tick') {
+    osc.frequency.setValueAtTime(120, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.03);
+  } else if (type === 'win') {
+    const now = audioCtx.currentTime;
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(523.25, now); // C5
+    osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+    osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+    osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+    osc.start(now); osc.stop(now + 0.6);
+  }
+}
+
 let selected = { brain: ["bored"], situation: ["phone"], category: ["any"] };
 let currentActivity = null;
 let currentRotation = 0;
 let spinning = false;
 let saved = JSON.parse(localStorage.getItem("boredomRouletteSaved") || "[]");
 let streak = Number(localStorage.getItem("boredomRouletteStreak") || "0");
+let userProfile = JSON.parse(localStorage.getItem("boredomRouletteProfile") || "null");
 
 const activities = [
-  { id: "bad-drawing", title: "Make the Worst Drawing Possible", emoji: "🎨", desc: "Set a 3-minute timer and intentionally create the ugliest masterpiece you can. Give it a dramatic title.", brain: ["bored","stim","creative","frustrated"], situation: ["phone","inside","alone","broke","fiveMinutes"], categories: ["create","chaos"], character: "🎨" },
-  { id: "fake-product", title: "Invent a Completely Useless Product", emoji: "💡", desc: "Invent something nobody needs. Give it a ridiculous name, slogan, and fake commercial.", brain: ["bored","creative","stim"], situation: ["phone","inside","alone","people","broke"], categories: ["create","laugh","chaos"], character: "💡" },
-  { id: "three-shapes", title: "Draw Something Using Only Three Shapes", emoji: "🔺", desc: "Pick three shapes and build an entire drawing using nothing else.", brain: ["creative","chill"], situation: ["phone","inside","alone","broke","fiveMinutes"], categories: ["create","play"], character: "🎨" },
-  { id: "bad-joke", title: "Invent the Worst Joke You Can", emoji: "😂", desc: "Your mission is not to be funny. Your mission is to be impressively terrible.", brain: ["bored","stim","frustrated","social"], situation: ["phone","inside","alone","people","broke","fiveMinutes"], categories: ["laugh","social","chaos"], character: "😂" },
-  { id: "news-bloopers", title: "Watch Live News Bloopers", emoji: "📺", desc: "Find a compilation of news anchors losing their professional composure.", brain: ["bored","chill","stim"], situation: ["phone","inside","alone","people"], categories: ["watch","laugh"], character: "📺" },
-  { id: "super-friends", title: "Take a Trip Back to Super Friends", emoji: "🦸", desc: "Put on an episode of Super Friends and let your brain time-travel to Saturday morning.", brain: ["nostalgic","chill","bored"], situation: ["phone","inside","alone","people"], categories: ["watch","nostalgia"], character: "🦸" },
-  { id: "scooby", title: "Watch Some Classic Scooby-Doo", emoji: "🐕", desc: "Mystery, snacks, questionable disguises, and one dog who deserves better.", brain: ["nostalgic","chill","bored"], situation: ["phone","inside","alone","people"], categories: ["watch","nostalgia"], character: "🐕" },
-  { id: "bluey", title: "Watch an Episode of Bluey", emoji: "🐶", desc: "Pick an episode and let Bluey handle the emotional damage.", brain: ["chill","nostalgic","bored"], situation: ["phone","inside","alone","people"], categories: ["watch","nostalgia"], character: "🐶" },
-  { id: "mickey", title: "Go Watch Some Mickey Mouse", emoji: "🐭", desc: "Throw on some Mickey and enjoy some classic cartoon chaos.", brain: ["chill","nostalgic","bored"], situation: ["phone","inside","alone","people"], categories: ["watch","nostalgia"], character: "🐭" },
-  { id: "random-music", title: "Put Your Music on Shuffle", emoji: "🎵", desc: "Hit shuffle and commit to the first three songs. No skipping.", brain: ["bored","stim","chill","frustrated"], situation: ["phone","inside","outside","alone","people"], categories: ["music","play"], character: "🎧" },
-  { id: "music-time-machine", title: "Music Time Machine", emoji: "⏰", desc: "Pick a random year from your childhood or teenage years and listen to music from that year.", brain: ["nostalgic","curious","chill"], situation: ["phone","inside","outside","alone","people"], categories: ["music","nostalgia","learn"], character: "⏰" },
-  { id: "angry-music", title: "Turn Up the Angry Music", emoji: "😤", desc: "Put on the loudest acceptable angry song you know and let your brain burn off some static.", brain: ["frustrated","stim"], situation: ["phone","inside","outside","alone"], categories: ["music","chaos"], character: "😤" },
-  { id: "fairy-tail", title: "Enter the Fairy Tail Universe", emoji: "🐉", desc: "Watch an episode, listen to the soundtrack, or fall down a Fairy Tail rabbit hole.", brain: ["bored","stim","nostalgic","curious"], situation: ["phone","inside","alone","people"], categories: ["watch","nostalgia","learn"], character: "🐉" },
-  { id: "pop-demon-hunters", title: "Put on Some Pop Demon Hunters", emoji: "🎤", desc: "Pick an episode, song, clip, or soundtrack and enter maximum pop-demon energy.", brain: ["stim","chill","bored"], situation: ["phone","inside","alone","people"], categories: ["watch","music","play"], character: "🎤" },
-  { id: "wiki-rabbit-hole", title: "Fall Down a Wikipedia Rabbit Hole", emoji: "🐇", desc: "Pick the weirdest topic you can think of and follow links until you have absolutely no idea how you got there.", brain: ["curious","bored","stim"], situation: ["phone","inside","alone","fiveMinutes"], categories: ["learn","chaos"], character: "🐇" },
-  { id: "tiny-reset", title: "Reset One Tiny Part of Your Space", emoji: "🧹", desc: "Choose exactly ONE tiny area. Five minutes. Then stop. This is not a cleaning marathon.", brain: ["frustrated","chill","bored"], situation: ["inside","alone","broke","fiveMinutes","lowEnergy"], categories: ["create","play"], character: "🧹" },
-  { id: "question-game", title: "Ask Someone a Completely Random Question", emoji: "❓", desc: "Ask someone: If you could instantly master one completely useless skill, what would it be?", brain: ["social","bored","curious"], situation: ["phone","people"], categories: ["social","laugh"], character: "❓" },
-  { id: "three-minute-story", title: "Write a Three-Minute Story", emoji: "📖", desc: "Start with: 'The package definitely wasn't supposed to be breathing.' Then write for three minutes.", brain: ["creative","curious"], situation: ["phone","inside","alone","broke","fiveMinutes"], categories: ["create","chaos"], character: "📖" },
-  { id: "fake-review", title: "Write a Fake Review for an Object", emoji: "⭐", desc: "Review something near you as if it were a product you bought online.", brain: ["creative","laugh","bored"], situation: ["inside","alone","phone","broke","fiveMinutes"], categories: ["create","laugh","chaos"], character: "⭐" },
-  { id: "emoji-movie", title: "Describe a Movie Using Only Emojis", emoji: "🎬", desc: "Pick a movie and describe the entire plot using emojis. Make someone guess it.", brain: ["social","creative","laugh"], situation: ["phone","people","alone"], categories: ["play","social","laugh"], character: "🎬" },
-  { id: "random-challenge", title: "Do a Completely Random Five-Minute Challenge", emoji: "🎲", desc: "Set a five-minute timer and do whatever weird harmless challenge your brain invents.", brain: ["bored","stim","creative"], situation: ["phone","inside","outside","alone","people","broke","fiveMinutes"], categories: ["chaos","play"], character: "🎲" },
-  { id: "color-hunt", title: "The 3-Item Color Hunt", emoji: "🔍", desc: "Look around you and find 3 items of the exact same shade of blue or green right now.", brain: ["bored","stim","chill"], situation: ["inside","outside","alone","fiveMinutes","lowEnergy"], categories: ["play","chaos"], character: "🔍" },
-  { id: "reverse-todo", title: "Make a Reverse To-Do List", emoji: "📝", desc: "Write down 5 things you've ALREADY done today (even 'opened eyes'). Cross them off for dopamine.", brain: ["chill","frustrated","lowEnergy"], situation: ["phone","inside","alone","fiveMinutes"], categories: ["create","play"], character: "📝" },
-  { id: "sound-scavenger", title: "Sound Scavenger Hunt", emoji: "🎧", desc: "Close your eyes for 30 seconds. Identify 4 distinct sounds happening around you right now.", brain: ["chill","curious"], situation: ["inside","outside","alone","fiveMinutes","lowEnergy"], categories: ["learn","play"], character: "🎧" },
-  { id: "wiki-race", title: "Speed Wikipedia Race", emoji: "⚡", desc: "Go to Wikipedia. Click 'Random Article'. Try to reach 'Banana' or 'Moon' in under 5 clicks.", brain: ["stim","curious","bored"], situation: ["phone","inside","alone","fiveMinutes"], categories: ["play","learn"], character: "⚡" },
-  { id: "fake-accent", title: "Read News in a Terrible Accent", emoji: "🗣️", desc: "Open any news article or post and read out loud in the worst British or Pirate accent you can.", brain: ["laugh","creative","stim"], situation: ["phone","inside","alone","fiveMinutes"], categories: ["laugh","chaos"], character: "🗣️" },
-  { id: "desk-origami", title: "Accidental Origami", emoji: "📄", desc: "Grab a receipt or scrap paper and try folding a paper crane or boat without looking up instructions.", brain: ["creative","bored","frustrated"], situation: ["inside","alone","broke","fiveMinutes"], categories: ["create","play"], character: "📄" },
-  { id: "sky-view", title: "Observe Cloud Shapes for 2 Minutes", emoji: "☁️", desc: "Look out the window or step outside. Find at least 2 clouds that look like recognizable creatures.", brain: ["chill","nostalgic"], situation: ["outside","inside","alone","fiveMinutes","lowEnergy"], categories: ["play","chill"], character: "☁️" },
-  { id: "micro-journal", title: "6-Word Life Update", emoji: "✍️", desc: "Summarize your entire week or current vibe in EXACTLY six words. No more, no less.", brain: ["creative","curious","chill"], situation: ["phone","inside","alone","fiveMinutes"], categories: ["create","learn"], character: "✍️" }
+  // KIDS EXCLUSIVE (Under 13)
+  { id: "plushie-tea-party", title: "Host a Plushie Tea Party", emoji: "🧸", desc: "Gather your favorite stuffed animals, set up plastic cups, and give them fancy names.", brain: ["bored","chill","creative"], situation: ["inside","alone","people","broke"], categories: ["play","laugh"], character: "🧸", ageGroup: ["kids"] },
+  { id: "fort-builder", title: "Build a Blanket & Pillow Fort", emoji: "🏰", desc: "Grab every cushion and blanket in sight and build a top-secret fort base.", brain: ["creative","bored","stim"], situation: ["inside","alone","people","broke"], categories: ["create","play"], character: "🏰", ageGroup: ["kids"] },
+  { id: "floor-lava", title: "Floor is Lava Speed Run", emoji: "🌋", desc: "Cross the entire room without your feet touching the carpet or floor once!", brain: ["stim","bored"], situation: ["inside","alone","people","broke"], categories: ["play","chaos"], character: "🌋", ageGroup: ["kids"] },
+  { id: "shadow-puppets", title: "Shadow Puppet Theater", emoji: "🔦", desc: "Turn off the lights, grab a flashlight, and make shadow animals on the wall.", brain: ["chill","creative"], situation: ["inside","alone","fiveMinutes"], categories: ["create","play"], character: "🔦", ageGroup: ["kids","teen"] },
+
+  // TEEN & KIDS
+  { id: "desk-origami", title: "Accidental Origami", emoji: "📄", desc: "Grab a receipt or scrap paper and try folding a paper crane or boat without looking up instructions.", brain: ["creative","bored","frustrated"], situation: ["inside","alone","broke","fiveMinutes"], categories: ["create","play"], character: "📄", ageGroup: ["kids","teen","adult"] },
+  { id: "sky-view", title: "Observe Cloud Shapes for 2 Minutes", emoji: "☁️", desc: "Look out the window or step outside. Find at least 2 clouds that look like recognizable creatures.", brain: ["chill","nostalgic"], situation: ["outside","inside","alone","fiveMinutes","lowEnergy"], categories: ["play","chill"], character: "☁️", ageGroup: ["kids","teen","adult"] },
+  { id: "color-hunt", title: "The 3-Item Color Hunt", emoji: "🔍", desc: "Look around you and find 3 items of the exact same shade of blue or green right now.", brain: ["bored","stim","chill"], situation: ["inside","outside","alone","fiveMinutes","lowEnergy"], categories: ["play","chaos"], character: "🔍", ageGroup: ["kids","teen","adult"] },
+  { id: "snack-hack", title: "3-Ingredient Snack Hack", emoji: "🥪", desc: "Invent a new snack or drink combination using only three items already in your kitchen right now.", brain: ["creative","bored"], situation: ["inside","broke","fiveMinutes"], categories: ["create","chaos"], character: "🥪", ageGroup: ["kids","teen","adult"] },
+  { id: "doodle-transform", title: "Doodle Transformation", emoji: "🪄", desc: "Draw a random squiggly line with your eyes closed, then open your eyes and turn it into a creature.", brain: ["creative","stim"], situation: ["phone","inside","broke","fiveMinutes"], categories: ["create","play"], character: "🪄", ageGroup: ["kids","teen","adult"] },
+
+  // TEEN & ADULT ONLY (13+)
+  { id: "news-bloopers", title: "Watch Live News Bloopers", emoji: "📺", desc: "Find a compilation of news anchors losing their professional composure.", brain: ["bored","chill","stim"], situation: ["phone","inside","alone","people"], categories: ["watch","laugh"], character: "📺", ageGroup: ["teen","adult"] },
+  { id: "music-time-machine", title: "Music Time Machine", emoji: "⏰", desc: "Pick a random year from your teenage years and listen to top hits from that year.", brain: ["nostalgic","curious","chill"], situation: ["phone","inside","outside","alone","people"], categories: ["music","nostalgia","learn"], character: "⏰", ageGroup: ["teen","adult"] },
+  { id: "angry-music", title: "Turn Up the Angry Music", emoji: "😤", desc: "Put on the loudest acceptable angry song you know and let your brain burn off some static.", brain: ["frustrated","stim"], situation: ["phone","inside","outside","alone"], categories: ["music","chaos"], character: "😤", ageGroup: ["teen","adult"] },
+  { id: "wiki-rabbit-hole", title: "Fall Down a Wikipedia Rabbit Hole", emoji: "🐇", desc: "Pick the weirdest topic you can think of and follow links until you have absolutely no idea how you got there.", brain: ["curious","bored","stim"], situation: ["phone","inside","alone","fiveMinutes"], categories: ["learn","chaos"], character: "🐇", ageGroup: ["teen","adult"] },
+  { id: "tiny-reset", title: "Reset One Tiny Part of Your Space", emoji: "🧹", desc: "Choose exactly ONE tiny area. Five minutes. Then stop. This is not a cleaning marathon.", brain: ["frustrated","chill","bored"], situation: ["inside","alone","broke","fiveMinutes","lowEnergy"], categories: ["create","play"], character: "🧹", ageGroup: ["teen","adult"] },
+  { id: "fake-review", title: "Write a Fake Review for an Object", emoji: "⭐", desc: "Review something near you as if it were a product you bought online.", brain: ["creative","laugh","bored"], situation: ["inside","alone","phone","broke","fiveMinutes"], categories: ["create","laugh","chaos"], character: "⭐", ageGroup: ["teen","adult"] },
+  { id: "fake-accent", title: "Read News in a Terrible Accent", emoji: "🗣️", desc: "Open any news article or post and read out loud in the worst British or Pirate accent you can.", brain: ["laugh","creative","stim"], situation: ["phone","inside","alone","fiveMinutes"], categories: ["laugh","chaos"], character: "🗣️", ageGroup: ["teen","adult"] },
+  { id: "album-remix", title: "Album Art Remix", emoji: "💿", desc: "Take a random photo from your camera roll and add title text as if it were a massive hit music album.", brain: ["creative","nostalgic"], situation: ["phone","inside","broke"], categories: ["create","music"], character: "💿", ageGroup: ["teen","adult"] },
+  { id: "movie-pitch", title: "Dramatic Movie Pitch", emoji: "🎬", desc: "Pick two completely unrelated items near you and pitch a 30-second blockbuster action movie starring them.", brain: ["creative","laugh","social"], situation: ["inside","people","fiveMinutes"], categories: ["laugh","chaos"], character: "🎬", ageGroup: ["kids","teen","adult"] },
+  { id: "bad-advice", title: "Bad Advice Bot", emoji: "🤖", desc: "Think of a minor problem, then give yourself or someone else the most hilariously terrible advice possible.", brain: ["laugh","social","frustrated"], situation: ["inside","people","phone","fiveMinutes"], categories: ["laugh","social"], character: "🤖", ageGroup: ["teen","adult"] },
+  { id: "speed-quiz", title: "The 2-Minute Speed Quiz", emoji: "❓", desc: "Look up a quick 5-question trivia quiz on a subject you know nothing about and see how well you guess.", brain: ["curious","bored"], situation: ["phone","inside","fiveMinutes"], categories: ["learn","play"], character: "❓", ageGroup: ["teen","adult"] },
+  { id: "street-view-mystery", title: "Street View Mystery", emoji: "🗺️", desc: "Drop a random Street View pin on a map and try to guess what country you're in based on clues.", brain: ["curious","stim"], situation: ["phone","inside"], categories: ["learn","chaos"], character: "🗺️", ageGroup: ["teen","adult"] },
+
+  // ADULT EXCLUSIVE (18+)
+  { id: "reverse-todo", title: "Make a Reverse To-Do List", emoji: "📝", desc: "Write down 5 things you've ALREADY done today (even 'opened eyes'). Cross them off for dopamine.", brain: ["chill","frustrated","lowEnergy"], situation: ["phone","inside","alone","fiveMinutes"], categories: ["create","play"], character: "📝", ageGroup: ["adult"] },
+  { id: "micro-journal", title: "6-Word Life Update", emoji: "✍️", desc: "Summarize your entire week or current vibe in EXACTLY six words. No more, no less.", brain: ["creative","curious","chill"], situation: ["phone","inside","alone","fiveMinutes"], categories: ["create","learn"], character: "✍️", ageGroup: ["adult"] },
+  { id: "super-friends", title: "Take a Trip Back to Super Friends", emoji: "🦸", desc: "Put on an episode of Super Friends and let your brain time-travel to Saturday morning.", brain: ["nostalgic","chill","bored"], situation: ["phone","inside","alone","people"], categories: ["watch","nostalgia"], character: "🦸", ageGroup: ["adult"] }
+];
+
+const chaosChallenges = [
+  { title: "The Non-Dominant Challenge", desc: "Spend the next 5 minutes using only your non-dominant hand for everything.", character: "✋" },
+  { title: "Whisper Mode Activated", desc: "You must communicate only in dramatic theatrical whispers for the next 10 minutes.", character: "🤫" },
+  { title: "The Statue Staredown", desc: "Pick an object in your room. Stare at it for 60 seconds without blinking once.", character: "👁️" },
+  { title: "Robot Voice Protocol", desc: "Read every notification or text on your phone out loud in a robotic voice.", character: "🤖" }
 ];
 
 const generators = {
@@ -679,88 +797,90 @@ const generators = {
     ["Draw your dream room without worrying about realism.", "🎨"],
     ["Design a ridiculous superhero costume.", "🦸"],
     ["Invent a fictional restaurant menu.", "🍔"],
-    ["Make a tiny comic with exactly four panels.", "💥"],
-    ["Create a new Pokémon that should absolutely not exist.", "🐉"],
-    ["Design an app nobody asked for.", "📱"],
-    ["Draw an animal as a medieval knight.", "⚔️"],
-    ["Write a dramatic movie trailer for your day.", "🎬"]
+    ["Make a tiny comic with exactly four panels.", "💥"]
   ],
   laugh: [
     ["Make the worst pun you can.", "😂"],
     ["Narrate what you're doing like a nature documentary.", "🎙️"],
-    ["Give an object near you a ridiculous backstory.", "📖"],
-    ["Search for the weirdest animal fact you can find.", "🐙"],
-    ["Make up a fake commercial for your socks.", "📺"],
-    ["Try to make someone laugh using only one sentence.", "🤣"]
+    ["Give an object near you a ridiculous backstory.", "📖"]
   ],
   music: [
     ["Hit shuffle and commit to the first song.", "🎵"],
-    ["Listen to a song you loved years ago.", "⏰"],
-    ["Make a three-song mini playlist.", "🎧"],
-    ["Find a song from a completely different country.", "🌎"],
-    ["Listen to a soundtrack without watching the movie.", "🎬"],
-    ["Pick a random year and explore its music.", "📻"]
+    ["Listen to a song you loved years ago.", "⏰"]
   ],
   watch: [
     ["Watch a classic cartoon.", "📺"],
-    ["Find a ridiculous internet compilation.", "😂"],
-    ["Watch one episode of a show you haven't seen.", "🎬"],
-    ["Watch a movie trailer from 20 years ago.", "🎞️"],
-    ["Watch something completely outside your normal taste.", "👀"],
-    ["Find a short animated film.", "✨"]
+    ["Find a ridiculous internet compilation.", "😂"]
   ],
   learn: [
     ["Learn why something in your room works.", "🧠"],
-    ["Look up a weird historical event.", "📜"],
-    ["Learn three facts about an animal.", "🐙"],
-    ["Explore a random Wikipedia page.", "🐇"],
-    ["Learn how something common is manufactured.", "🏭"],
-    ["Find out where a familiar phrase came from.", "📚"]
+    ["Look up a weird historical event.", "📜"]
   ],
   play: [
     ["Play a game you haven't touched in months.", "🎮"],
-    ["Make up a game using only objects nearby.", "🎲"],
-    ["Play a quick puzzle game.", "🧩"],
-    ["Try to beat your own high score.", "🏆"],
-    ["Play something deliberately badly.", "😂"]
+    ["Make up a game using only objects nearby.", "🎲"]
   ],
   nostalgia: [
     ["Listen to music from your childhood.", "🎵"],
-    ["Watch an old cartoon.", "📺"],
-    ["Look up toys from the year you were a kid.", "🧸"],
-    ["Find an old movie trailer.", "🎬"],
-    ["Search for commercials from your childhood era.", "📼"],
-    ["Think of your favorite childhood snack and recreate it.", "🍿"]
+    ["Watch an old cartoon.", "📺"]
   ],
   social: [
     ["Send someone a completely random meme.", "😂"],
-    ["Ask someone a ridiculous hypothetical question.", "❓"],
-    ["Call someone you haven't talked to lately.", "📞"],
-    ["Start a group chat debate over something meaningless.", "🔥"],
-    ["Ask someone what their current obsession is.", "🧠"]
+    ["Ask someone a ridiculous hypothetical question.", "❓"]
   ],
   chaos: [
     ["Let a random number generator decide what you do next.", "🎲"],
-    ["Draw with your non-dominant hand.", "✋"],
-    ["Make up a fake conspiracy about your house.", "🕵️"],
-    ["Set a timer for three minutes and speed-clean one tiny area.", "🧹"],
-    ["Pick a random object and invent five uses for it.", "💡"],
-    ["Do something harmless that you normally consider 'too weird.'", "💥"]
+    ["Draw with your non-dominant hand.", "✋"]
   ]
 };
 
 const reelsData = {
-  create: { title: "Satisfying art & DIY transformation shorts", query: "satisfying art shorts DIY" },
+  create: { title: "Satisfying art & DIY shorts", query: "satisfying art shorts" },
   laugh: { title: "Try Not to Laugh challenge compilations", query: "try not to laugh challenge funny shorts" },
-  music: { title: "Viral song mashups & hidden gem tracks", query: "viral mashup trending music shorts" },
+  music: { title: "Viral song mashups & hidden gems", query: "viral mashup trending music shorts" },
   watch: { title: "Bizarre internet rabbit hole deep dives", query: "weird internet history short documentary" },
   learn: { title: "Mind-blowing psychology & science facts", query: "mind blowing psychology facts shorts" },
-  play: { title: "Insane mobile gaming speedruns & tricks", query: "gaming speedrun satisfying shorts" },
-  nostalgia: { title: "2000s cartoon intros & childhood memories", query: "2000s childhood nostalgia compilation shorts" },
-  social: { title: "Awkward public interviews & social experiments", query: "funny public interview street shorts" },
-  chaos: { title: "Absolute unpredictable internet chaos", query: "funny absurd meme shorts compilation" },
-  default: { title: "Trending viral shorts & reels right now", query: "trending viral shorts compilation" }
+  play: { title: "Insane mobile gaming speedruns", query: "gaming speedrun satisfying shorts" },
+  nostalgia: { title: "Cartoon intros & nostalgia compilation", query: "childhood nostalgia compilation shorts" },
+  social: { title: "Funny street interviews", query: "funny public interview street shorts" },
+  chaos: { title: "Absurd internet chaos", query: "funny absurd meme shorts compilation" },
+  default: { title: "Trending viral shorts right now", query: "trending viral shorts compilation" }
 };
+
+function calculateAgeGroup(dobString) {
+  const dob = new Date(dobString);
+  const now = new Date();
+  let age = now.getFullYear() - dob.getFullYear();
+  const monthDiff = now.getMonth() - dob.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && now.getDate() < dob.getDate())) {
+    age--;
+  }
+  if (age < 13) return { tier: "kids", age: age, label: "🎈 Kids Mode" };
+  if (age < 18) return { tier: "teen", age: age, label: "🎧 Teen Mode" };
+  return { tier: "adult", age: age, label: "👤 Adult Mode" };
+}
+
+function checkProfile() {
+  if (!userProfile) {
+    document.getElementById("profileModal").style.display = "flex";
+  } else {
+    document.getElementById("profileModal").style.display = "none";
+    const groupInfo = calculateAgeGroup(userProfile.dob);
+    document.getElementById("profileBadge").textContent = `👤 ${userProfile.name} (${groupInfo.label})`;
+  }
+}
+
+function saveProfile(e) {
+  e.preventDefault();
+  playSound('click');
+  const name = document.getElementById("userNameInput").value.trim();
+  const dob = document.getElementById("userDobInput").value;
+  if (!name || !dob) return;
+
+  userProfile = { name, dob };
+  localStorage.setItem("boredomRouletteProfile", JSON.stringify(userProfile));
+  checkProfile();
+}
 
 function getReelForCategory(category) {
   const match = reelsData[category] || reelsData.default;
@@ -771,6 +891,7 @@ function getReelForCategory(category) {
 }
 
 function selectChoice(button) {
+  playSound('click');
   const group = button.dataset.group;
   const value = button.dataset.value;
   const isSelected = button.classList.contains("selected");
@@ -799,25 +920,34 @@ function selectChoice(button) {
 }
 
 function getEligibleActivities(ignoreFilters = false) {
-  if (ignoreFilters) return [...activities];
+  const currentTier = userProfile ? calculateAgeGroup(userProfile.dob).tier : "kids";
+
+  let pool = activities.filter(act => {
+    return !act.ageGroup || act.ageGroup.includes(currentTier);
+  });
+
+  if (ignoreFilters) return pool;
+
   const brains = selected.brain;
   const situations = selected.situation;
   const categories = selected.category;
-  let results = activities.filter(activity => {
+
+  let results = pool.filter(activity => {
     const brainMatch = brains.some(b => activity.brain.includes(b));
     const situationMatch = situations.some(s => activity.situation.includes(s));
     const categoryMatch = categories.includes("any") || categories.some(c => activity.categories.includes(c));
     return brainMatch && situationMatch && categoryMatch;
   });
+
   if (results.length === 0) {
-    results = activities.filter(activity => {
+    results = pool.filter(activity => {
       return categories.includes("any") || categories.some(c => activity.categories.includes(c));
     });
   }
   if (results.length === 0) {
-    results = activities.filter(activity => brains.some(b => activity.brain.includes(b)));
+    results = pool.filter(activity => brains.some(b => activity.brain.includes(b)));
   }
-  if (results.length === 0) results = [...activities];
+  if (results.length === 0) results = [...pool];
   return results;
 }
 
@@ -858,10 +988,19 @@ function spinWheelTo(category) {
   const target = extraSpins + (360 - targetCenter);
   currentRotation += target;
   document.getElementById("wheel").style.transform = `rotate(${currentRotation}deg)`;
+  
+  // Ticking sound during spin
+  let ticks = 0;
+  const interval = setInterval(() => {
+    ticks++;
+    playSound('tick');
+    if (ticks > 15) clearInterval(interval);
+  }, 180);
 }
 
 function spinRoulette(quick = false) {
   if (spinning) return;
+  playSound('click');
   spinning = true;
   const button = document.getElementById("spinButton");
   const status = document.getElementById("wheelStatus");
@@ -885,8 +1024,18 @@ function spinRoulette(quick = false) {
     streak++;
     localStorage.setItem("boredomRouletteStreak", streak);
     updateStreakDisplay();
+    playSound('win');
     confetti();
   }, 3100);
+}
+
+function triggerChaosChallenge() {
+  playSound('click');
+  const challenge = chaosChallenges[Math.floor(Math.random() * chaosChallenges.length)];
+  currentActivity = { id: "chaos-" + Date.now(), title: challenge.title, emoji: challenge.character, desc: challenge.desc, character: challenge.character };
+  showResult(currentActivity, "CHAOS");
+  playSound('win');
+  confetti();
 }
 
 function quickSpin() { spinRoulette(true); }
@@ -911,6 +1060,7 @@ function showResult(activity, category) {
 }
 
 function saveCurrent() {
+  playSound('click');
   if (!currentActivity) return;
   const exists = saved.some(item => item.id === currentActivity.id);
   if (!exists) {
@@ -951,6 +1101,7 @@ function renderSaved() {
 }
 
 function deleteSaved(index) {
+  playSound('click');
   saved.splice(index, 1);
   localStorage.setItem("boredomRouletteSaved", JSON.stringify(saved));
   renderSaved();
@@ -958,6 +1109,7 @@ function deleteSaved(index) {
 }
 
 function showSection(id, button) {
+  playSound('click');
   document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
   document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
@@ -967,7 +1119,12 @@ function showSection(id, button) {
 
 function updateStreakDisplay() {
   const badge = document.getElementById("streakBadge");
-  if (badge) badge.textContent = `🔥 ${streak} SPINS`;
+  if (!badge) return;
+  let title = "Rookie Picker";
+  if (streak >= 5) title = "Spin Enthusiast";
+  if (streak >= 15) title = "Boredom Master";
+  if (streak >= 30) title = "👑 Wheel Legend";
+  badge.textContent = `🔥 ${streak} SPINS (${title})`;
 }
 
 const themes = {
@@ -1022,6 +1179,7 @@ const themes = {
 };
 
 function setTheme(name) {
+  playSound('click');
   const theme = themes[name];
   if (!theme) return;
   const root = document.documentElement;
@@ -1044,6 +1202,7 @@ function setTheme(name) {
 }
 
 function toggleThemePanel() {
+  playSound('click');
   document.getElementById("themePanel").classList.toggle("open");
 }
 
@@ -1073,6 +1232,7 @@ function escapeHTML(text) {
 }
 
 loadTheme();
+checkProfile();
 renderSaved();
 updateStreakDisplay();
 </script>
